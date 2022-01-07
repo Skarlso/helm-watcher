@@ -10,6 +10,7 @@ type HelmCache struct {
 func NewCache() *HelmCache {
 	return &HelmCache{
 		cache: make(map[string]string),
+		mut:   &sync.RWMutex{},
 	}
 }
 

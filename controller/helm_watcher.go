@@ -27,7 +27,6 @@ func (r *HelmWatcherReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
-	log.Info("Running reconcile...")
 
 	// get source object
 	var repository sourcev1.HelmRepository
