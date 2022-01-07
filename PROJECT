@@ -1,0 +1,6 @@
+domain: helm.watcher
+layout:
+- go.kubebuilder.io/v3
+projectName: helm-watcher
+repo: helm-watcher
+version: "3"

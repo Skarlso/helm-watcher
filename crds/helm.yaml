@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: test-controller-8
+spec:
+  interval: 1m0s
+  timeout: 1m0s
+  url: https://weaveworks.github.io/profiles-examples
