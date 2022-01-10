@@ -8,7 +8,7 @@ import (
 )
 
 // HelmWatcherReconcilerPredicate triggers an update event
-// when a HelmRepositroy revision changes.
+// when a HelmRepository revision changes.
 type HelmWatcherReconcilerPredicate struct {
 	predicate.Funcs
 }
