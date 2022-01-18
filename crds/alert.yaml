@@ -1,0 +1,14 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Alert
+metadata:
+  name: profile-version-alert
+  namespace: wego-system
+spec:
+  summary: 'A new profile version is available'
+  providerRef: 
+    name: slack
+  eventSeverity: info
+  eventSources:
+    - kind: HelmRepository
+      name: '*'
+  suspend: false

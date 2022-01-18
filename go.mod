@@ -13,6 +13,8 @@ require (
 	github.com/fluxcd/pkg/apis/kustomize v0.3.0 // indirect
 	github.com/fluxcd/pkg/apis/meta v0.10.2 // indirect
 	github.com/fluxcd/pkg/runtime v0.12.2 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
+	github.com/hashicorp/go-retryablehttp v0.6.8 // indirect
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2 // indirect
 )
 

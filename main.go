@@ -18,9 +18,12 @@ package main
 
 import (
 	"flag"
+	"os"
+
+	"github.com/fluxcd/pkg/runtime/events"
+
 	"helm-watcher/cache"
 	"helm-watcher/controller"
-	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -36,6 +39,8 @@ import (
 	//+kubebuilder:scaffold:imports
 )
 
+const controllerName = "helm-watcher"
+
 var (
 	scheme   = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
@@ -49,11 +54,16 @@ func init() {
 }
 
 func main() {
-	var metricsAddr string
-	var enableLeaderElection bool
-	var probeAddr string
+	var (
+		metricsAddr          string
+		enableLeaderElection bool
+		probeAddr            string
+		eventsAddr           string
+	)
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
+	//flag.StringVar(&eventsAddr, "events-addr", "http://notification-controller/", "The address of the events receiver.")
+	flag.StringVar(&eventsAddr, "events-addr", "http://localhost:8080", "The address of the events receiver.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
@@ -90,11 +100,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	var eventRecorder *events.Recorder
+	if eventsAddr != "" {
+		var err error
+		if eventRecorder, err = events.NewRecorder(eventsAddr, controllerName); err != nil {
+			setupLog.Error(err, "unable to create event recorder")
+			os.Exit(1)
+		}
+	}
+
 	c := cache.NewCache()
 	if err = (&controller.HelmWatcherReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-		Cache:  c,
+		Client:                mgr.GetClient(),
+		Scheme:                mgr.GetScheme(),
+		ExternalEventRecorder: eventRecorder,
+		Cache:                 c,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "HelmWatcherReconciler")
 		os.Exit(1)
